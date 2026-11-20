@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🗂️ TaskFlow
+# TaskFlow
 ### Dynamic Task Assignment and Scheduling Engine
 
 *Automatically assign tasks to the right employee, based on skills, availability, workload and deadlines.*
@@ -15,7 +15,7 @@
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 
 1. [Project Overview](#1--project-overview)
 2. [Key Features](#2--key-features)
@@ -33,7 +33,7 @@
 
 ---
 
-## 1. 📖 Project Overview
+## 1.  Project Overview
 
 **TaskFlow** is a web-based task assignment and scheduling system. It automates the allocation of tasks to employees by evaluating each employee's **skills**, **availability**, **current workload** and the task's **deadline**.
 
@@ -61,7 +61,7 @@ In manual task allocation, managers must remember who has which skills, who is f
 
 ---
 
-## 2. ✨ Key Features
+## 2.  Key Features
 
 Each feature below was checked against the source code.
 
@@ -91,7 +91,7 @@ Each feature below was checked against the source code.
 
 ---
 
-## 3. 🛠️ Technology Stack
+## 3. Technology Stack
 
 Taken from `backend/pom.xml`, `application.properties` and the frontend sources. TaskFlow does **not** use React, Node.js, Express or MongoDB.
 
@@ -125,7 +125,7 @@ Taken from `backend/pom.xml`, `application.properties` and the frontend sources.
 
 ---
 
-## 4. 🏗️ System Architecture
+## 4. System Architecture
 
 TaskFlow is a **single Spring Boot application**. It exposes a REST API under `/api/**` and serves the browser UI from `src/main/resources/static`. The browser talks to the API over HTTP/JSON and receives live updates over SSE.
 
@@ -200,7 +200,7 @@ flowchart TB
 
 ---
 
-## 5. 🧠 Algorithms and Data Structures
+## 5. Algorithms and Data Structures
 
 ### Greedy assignment with weighted scoring
 
@@ -321,9 +321,9 @@ flowchart TD
 
 ---
 
-## 6. 👥 User Roles and Workflow
+## 6. User Roles and Workflow
 
-### 👔 Manager
+### Manager
 
 | Capability | Where in the UI |
 |---|---|
@@ -337,7 +337,7 @@ flowchart TD
 | View assignment history and export it to CSV | **Reports / History** |
 | Receive notifications | Notification bell |
 
-### 🧑‍💻 Employee
+### Employee
 
 | Capability | Where in the UI |
 |---|---|
@@ -353,7 +353,7 @@ flowchart TD
 
 ---
 
-## 7. 📁 Project Folder Structure
+## 7. Project Folder Structure
 
 ```text
 TaskAssignmentSchedulingEngine/
@@ -410,11 +410,11 @@ TaskAssignmentSchedulingEngine/
 | `SecurityConfig.java` | BCrypt encoder, CORS, HTTP Basic configuration |
 | `frontend/js/app.js` | All UI logic (~2,600 lines) |
 
-> ⚠️ `frontend/` and `backend/src/main/resources/static/` hold the same UI. Spring Boot serves the **static** copy, so edits made only in `frontend/` will not appear at `http://localhost:8080/` until they are copied across. The two `api.js` files differ, but `index.html` loads only `app.js`.
+>  `frontend/` and `backend/src/main/resources/static/` hold the same UI. Spring Boot serves the **static** copy, so edits made only in `frontend/` will not appear at `http://localhost:8080/` until they are copied across. The two `api.js` files differ, but `index.html` loads only `app.js`.
 
 ---
 
-## 8. 🗄️ Database Design
+## 8.Database Design
 
 - **Engine:** H2, file mode: `jdbc:h2:file:./data/taskengine2;AUTO_SERVER=TRUE`
 - **Schema management:** Hibernate `ddl-auto=update` creates and updates tables automatically.
@@ -619,7 +619,7 @@ Optionally, the UI files can be opened from a static server on another port (for
 
 ---
 
-## 10. 🚀 Application Usage
+## 10. Application Usage
 
 ### Demo credentials (created automatically for demonstration)
 
@@ -630,7 +630,7 @@ Optionally, the UI files can be opened from a static server on another port (for
 
 These are **demo credentials only**. Change them before any real use. New employees created in the UI also get the password `employee123`.
 
-> ℹ️ If no saved session exists in the browser, the app signs in as the manager automatically. Use **Logout** to reach the login screen and choose the portal.
+>  If no saved session exists in the browser, the app signs in as the manager automatically. Use **Logout** to reach the login screen and choose the portal.
 
 ### Step by step
 
@@ -649,7 +649,7 @@ These are **demo credentials only**. Change them before any real use. New employ
 
 ---
 
-## 11. 🧪 Testing
+## 11. Testing
 
 The project contains **PowerShell API test scripts** in `backend/`. There is no unit-test source folder (`src/test`) and **no recorded test results**, so this README does not claim that any test has passed. Run the scripts yourself against a running backend.
 
@@ -682,11 +682,11 @@ The other scripts are `enhanced_assignment_test.ps1`, `deadline_assignment_test.
 
 \* Based on the assertions in the scripts, not on executed results.
 
-> ⚠️ `enhanced_assignment_test.ps1` expects tie-breaks by *active commitments, employee priority and performance*. The current `runAssignment()` ranks by **score → workload → employee ID**, so those assertions may need updating. Review the scripts against the current code before relying on them.
+> `enhanced_assignment_test.ps1` expects tie-breaks by *active commitments, employee priority and performance*. The current `runAssignment()` ranks by **score → workload → employee ID**, so those assertions may need updating. Review the scripts against the current code before relying on them.
 
 ---
 
-## 12. ⚠️ Known Limitations
+## 12. Known Limitations
 
 Documented here so the README reflects the code as it is today:
 
@@ -704,18 +704,18 @@ Documented here so the README reflects the code as it is today:
 
 ---
 
-## 13. 🔮 Future Enhancements
+## 13.Future Enhancements
 
 > **Planned, not implemented.**
 
-- 🔐 Server-side role-based authorisation (JWT or session) and password-change flow
-- 📅 Calendar-aware availability and shift scheduling
-- 🔄 Automatic rescheduling when an employee reports an emergency or becomes unavailable
-- ⚖️ More advanced scheduling strategies and workload optimisation (for example global optimisation rather than purely greedy)
-- 📣 Email / push notifications in addition to in-app alerts
-- 📊 Richer analytics and downloadable reports
-- 🗄️ Production database (PostgreSQL or MySQL) and containerised deployment
-- ✅ Automated unit and integration tests in `src/test` with CI
+-  Server-side role-based authorisation (JWT or session) and password-change flow
+-  Calendar-aware availability and shift scheduling
+-  Automatic rescheduling when an employee reports an emergency or becomes unavailable
+-  More advanced scheduling strategies and workload optimisation (for example global optimisation rather than purely greedy)
+-  Email / push notifications in addition to in-app alerts
+-  Richer analytics and downloadable reports
+-  Production database (PostgreSQL or MySQL) and containerised deployment
+-  Automated unit and integration tests in `src/test` with CI
 
 ---
 
