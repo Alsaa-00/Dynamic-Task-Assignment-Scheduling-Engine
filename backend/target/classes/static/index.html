@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow | Task Assignment &amp; Scheduling Engine</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- LOGIN OVERLAY -->
+  <div id="login-overlay" class="login-overlay" style="display: none;">
+    <div class="login-card">
+      <div class="login-brand-header">
+        <div class="login-brand-logo">T</div>
+        <h2>TaskFlow Platform</h2>
+        <p>Dynamic Task Assignment &amp; Scheduling Engine</p>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-username">Username / Email</label>
+          <input type="text" id="login-username" required placeholder="manager or employee email" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" required placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <div id="login-error" style="color: var(--danger); font-size: 12px; margin-bottom: 12px; display: none;"></div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; height: 44px;">Sign In</button>
+      </form>
+
+      <div class="quick-demo-accounts">
+        <p>⚡ Quick Presentation Switch</p>
+        <div class="quick-demo-buttons">
+          <button type="button" class="demo-account-btn" id="quick-login-manager">👑 Manager</button>
+          <button type="button" class="demo-account-btn" id="quick-login-emp1">👤 Alsaba (Dev)</button>
+          <button type="button" class="demo-account-btn" id="quick-login-emp2">👤 Omkar (Dev)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP CONTAINER -->
+  <div class="app-container" id="app-container">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon-box">T</div>
+        <div class="brand-details">
+          <h2>TaskFlow</h2>
+          <span>SCHEDULING ENGINE</span>
+        </div>
+      </div>
+
+      <div class="portal-badge-container">
+        <div class="portal-badge" id="sidebar-portal-badge">
+          <span id="portal-role-text">Manager Portal</span>
+          <span class="badge-tag" id="portal-badge-tag">ADMIN</span>
+        </div>
+      </div>
+
+      <!-- NAVIGATION FOR MANAGER -->
+      <nav class="sidebar-nav" id="manager-nav">
+        <div class="nav-section-title">Operations</div>
+        <button class="nav-btn active" data-page="manager-dashboard" onclick="window.navigateToPage('manager-dashboard')">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-btn" data-page="manager-employees" onclick="window.navigateToPage('manager-employees')">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+          <span>Employees</span>
+        </button>
+        <button class="nav-btn" data-page="manager-tasks" onclick="window.navigateToPage('manager-tasks')">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+          <span>Tasks Backlog</span>
+        </button>
+        <button class="nav-btn" data-page="manager-workforce" onclick="window.navigateToPage('manager-workforce')">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+          <span>Workforce Monitoring</span>
+        </button>
+
+        <div class="nav-section-title">Emergency &amp; History</div>
+        <button class="nav-btn" data-page="manager-emergencies" onclick="window.navigateToPage('manager-emergencies')">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          <span>Emergency &amp; Reassign</span>
+          <span class="nav-badge" id="sidebar-emergencies-badge" style="display:none;">0</span>
+        </button>
+        <button class="nav-btn" data-page="manager-reports" onclick="window.navigateToPage('manager-reports')">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+          <span>Assignment History</span>
+        </button>
+      </nav>
+
+      <!-- NAVIGATION FOR EMPLOYEE -->
+      <nav class="sidebar-nav" id="employee-nav" style="display: none;">
+        <div class="nav-section-title">My Workspace</div>
+        <button class="nav-btn active" data-page="employee-dashboard" onclick="window.navigateToPage('employee-dashboard')">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+          <span>My Overview</span>
+        </button>
+        <button class="nav-btn" data-page="employee-tasks" onclick="window.navigateToPage('employee-tasks')">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>My Assigned Tasks</span>
+          <span class="nav-badge" id="sidebar-my-tasks-badge" style="display:none;">0</span>
+        </button>
+        <button class="nav-btn" data-page="employee-history" onclick="window.navigateToPage('employee-history')">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>Task History</span>
+        </button>
+
+        <div class="nav-section-title">Assistance</div>
+        <button class="nav-btn" data-page="employee-emergencies" onclick="window.navigateToPage('employee-emergencies')">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+          <span>Report Emergency</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="engine-status-box">
+          <span class="pulse-dot"></span>
+          <div class="engine-status-text">
+            <strong>Greedy Engine Active</strong>
+            <span id="sse-live-status">Live Synchronized</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+      
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="breadcrumbs">
+            <span>TASKFLOW</span> / <span class="current" id="breadcrumb-title">DASHBOARD</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Quick switch portal for evaluation -->
+          <div class="user-quick-switch">
+            <span>Role:</span>
+            <select id="header-role-switcher">
+              <option value="MANAGER">Manager Portal</option>
+              <option value="EMPLOYEE">Employee Portal</option>
+            </select>
+          </div>
+
+          <!-- Notification Bell -->
+          <button class="notification-btn" id="notif-bell-btn" title="Notifications">
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+            <span class="notification-count" id="notif-count-badge" style="display: none;">0</span>
+          </button>
+
+          <!-- Notification Dropdown -->
+          <div class="notification-dropdown" id="notification-dropdown">
+            <div class="notif-header">
+              <h4>System Notifications</h4>
+              <button class="btn btn-sm btn-secondary" id="mark-all-read-btn">Mark All Read</button>
+            </div>
+            <div class="notif-list" id="notif-list-container">
+              <!-- Dynamically rendered -->
+            </div>
+          </div>
+
+          <!-- Profile Pill -->
+          <div class="user-profile-pill" id="user-profile-pill">
+            <div class="user-avatar" id="topbar-avatar">M</div>
+            <div class="user-info">
+              <strong id="topbar-user-name">Manager</strong>
+              <span id="topbar-user-role">Administrator</span>
+            </div>
+            <button class="logout-btn-top" id="logout-button" title="Sign Out">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT BODY -->
+      <main class="content-body">
+        
+        <!-- ============================================== -->
+        <!-- VIEW 1: MANAGER DASHBOARD                      -->
+        <!-- ============================================== -->
+        <section class="page-view active" id="manager-dashboard-view">
+          <div class="hero-banner">
+            <div class="hero-text">
+              <span class="kicker">INTELLIGENT WORKFORCE ALLOCATION</span>
+              <h2>Heuristic Task Scheduling Engine</h2>
+              <p>Allocate tasks to eligible personnel using the Greedy Minimum Workload Heuristic with capacity constraints, priority sorting, and sequential workload balancing.</p>
+            </div>
+            <button class="hero-btn" id="hero-run-assignment-btn" onclick="window.runAutomaticAssignment()">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              Run Automatic Assignment
+            </button>
+          </div>
+
+          <!-- PREEMPTION ALERT BANNER -->
+          <div id="preemption-alert-banner" class="preemption-banner" style="display: none;">
+            <div class="preemption-banner-content">
+              <span class="preemption-banner-icon">⚡</span>
+              <div class="preemption-banner-text">
+                <strong id="preemption-banner-headline">Priority-Based Preemption Event</strong>
+                <p id="preemption-banner-message">High-priority task assigned. Medium-priority task paused and will resume after completion.</p>
+              </div>
+            </div>
+            <button class="preemption-banner-close" id="preemption-banner-close-btn" title="Dismiss">&times;</button>
+          </div>
+
+          <!-- 6 KEY DASHBOARD METRICS -->
+          <div class="stats-grid-6">
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Total Tasks</span><div class="stat-icon blue">📋</div></div>
+              <div class="stat-val" id="stat-total-tasks">0</div>
+              <div class="stat-subtext" id="stat-sub-tasks">All workspace tasks</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Pending Tasks</span><div class="stat-icon amber">⏳</div></div>
+              <div class="stat-val" id="stat-pending-tasks">0</div>
+              <div class="stat-subtext">Awaiting allocation</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">In Progress</span><div class="stat-icon indigo">⚡</div></div>
+              <div class="stat-val" id="stat-inprogress-tasks">0</div>
+              <div class="stat-subtext">Active execution</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Completed Tasks</span><div class="stat-icon green">✅</div></div>
+              <div class="stat-val" id="stat-completed-tasks">0</div>
+              <div class="stat-subtext">Successfully delivered</div>
+            </div>
+            <div class="stat-card stat-card-clickable" id="card-overdue-tasks" onclick="window.filterTasksByStatus('Overdue')" title="Click to filter Overdue tasks">
+              <div class="stat-card-top"><span class="stat-label">Overdue Tasks</span><div class="stat-icon red">🚨</div></div>
+              <div class="stat-val" id="stat-overdue-tasks" style="color: var(--danger);">0</div>
+              <div class="stat-subtext" style="color: var(--danger); font-weight: 500;">Filter overdue &rarr;</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Total Employees</span><div class="stat-icon purple">👥</div></div>
+              <div class="stat-val" id="stat-total-employees">0</div>
+              <div class="stat-subtext" id="stat-sub-employees">0 Available · 0 Busy</div>
+            </div>
+          </div>
+
+          <!-- DASHBOARD MIDDLE ROW: TASK STATUS & PRIORITY DISTRIBUTION -->
+          <div class="grid-2">
+            <!-- Task Status Overview -->
+            <div class="card-panel">
+              <div class="card-panel-header">
+                <div>
+                  <h3>Task Status Overview</h3>
+                  <p>Current distribution across lifecycle stages</p>
+                </div>
+              </div>
+              <div class="card-panel-body">
+                <div id="task-status-overview-box">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Priority Distribution -->
+            <div class="card-panel">
+              <div class="card-panel-header">
+                <div>
+                  <h3>Priority Distribution</h3>
+                  <p>Task volume categorized by operational urgency</p>
+                </div>
+              </div>
+              <div class="card-panel-body">
+                <div id="priority-distribution-box">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- EMPLOYEE WORKLOAD OVERVIEW -->
+          <div class="card-panel" style="margin-top: 20px;">
+            <div class="card-panel-header">
+              <div>
+                <h3>Employee Workload Overview</h3>
+                <p>Personnel capacity, skill proficiency, and active task load</p>
+              </div>
+              <button class="btn btn-sm btn-secondary" onclick="window.navigateToPage('manager-employees')">Manage All &rarr;</button>
+            </div>
+            <div class="card-panel-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="custom-table">
+                  <thead>
+                    <tr>
+                      <th>Employee</th>
+                      <th>Role</th>
+                      <th>Skills &amp; Proficiencies</th>
+                      <th>Status</th>
+                      <th>Active Tasks</th>
+                      <th>Workload Capacity</th>
+                    </tr>
+                  </thead>
+                  <tbody id="dashboard-employee-workload-tbody">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- RECENT ACTIVITY & ALERTS ROW -->
+          <div class="grid-2" style="margin-top: 20px;">
+            <div class="card-panel">
+              <div class="card-panel-header">
+                <div>
+                  <h3>Recent Task Activity</h3>
+                  <p>Automated allocation decisions &amp; updates</p>
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="window.navigateToPage('manager-reports')">View History &rarr;</button>
+              </div>
+              <div class="card-panel-body" style="padding: 0;">
+                <div class="table-responsive">
+                  <table class="custom-table">
+                    <thead>
+                      <tr><th>Task</th><th>Assigned To</th><th>Load Delta</th><th>Outcome</th></tr>
+                    </thead>
+                    <tbody id="dashboard-recent-assignments">
+                      <!-- Rendered dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-panel">
+              <div class="card-panel-header">
+                <div>
+                  <h3>Workforce &amp; Deadline Alerts</h3>
+                  <p>Unassigned task notices &amp; personnel reports</p>
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="window.navigateToPage('manager-emergencies')">Review All &rarr;</button>
+              </div>
+              <div class="card-panel-body" style="padding: 0;">
+                <div class="table-responsive">
+                  <table class="custom-table">
+                    <thead>
+                      <tr><th>Type</th><th>Message / Employee</th><th>Time</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="dashboard-alerts-table">
+                      <!-- Rendered dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PREEMPTIVE SCHEDULING MONITOR -->
+          <div class="card-panel" style="margin-top: 24px;">
+            <div class="card-panel-header">
+              <div>
+                <h3>Priority-Based Preemptive Scheduling Monitor</h3>
+                <p>Real-time tracking of executing tasks, paused lower-priority tasks, and preemption audit trail</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <span class="priority-tag priority-critical">Critical</span>
+                <span class="priority-tag priority-high">High</span>
+                <span class="priority-tag priority-medium">Medium</span>
+                <span class="priority-tag priority-low">Low</span>
+              </div>
+            </div>
+            <div class="card-panel-body">
+              <div class="grid-2">
+                <!-- Currently Executing Tasks -->
+                <div>
+                  <h4 style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                    <span>⚡ Currently Executing Tasks</span>
+                    <span class="badge inprogress" id="count-executing-tasks" style="font-size: 11px;">0</span>
+                  </h4>
+                  <div id="dashboard-executing-tasks-list" class="preemption-monitor-grid" style="grid-template-columns: 1fr;">
+                    <!-- Rendered dynamically -->
+                  </div>
+                </div>
+
+                <!-- Paused Tasks (Preempted) -->
+                <div>
+                  <h4 style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                    <span>⏸️ Paused Tasks (Preempted by Higher Priority)</span>
+                    <span class="badge paused" id="count-paused-tasks" style="font-size: 11px;">0</span>
+                  </h4>
+                  <div id="dashboard-paused-tasks-list" class="preemption-monitor-grid" style="grid-template-columns: 1fr;">
+                    <!-- Rendered dynamically -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Preemption Audit Trail Log -->
+              <div style="margin-top: 24px;">
+                <h4 style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 10px;">
+                  📜 Preemption &amp; Auto-Resume History Log
+                </h4>
+                <div class="table-responsive">
+                  <table class="custom-table">
+                    <thead>
+                      <tr>
+                        <th>Preempted At</th>
+                        <th>Higher Priority Task</th>
+                        <th>Preempted Task</th>
+                        <th>Employee</th>
+                        <th>Status</th>
+                        <th>Saved Progress</th>
+                        <th>Reason / Scheduling Result</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashboard-preemption-history-tbody">
+                      <!-- Rendered dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 2: MANAGER EMPLOYEES                      -->
+        <!-- ============================================== -->
+        <section class="page-view" id="manager-employees-view">
+          <div class="page-header">
+            <div class="page-header-text">
+              <h1>Employee Directory</h1>
+              <p>Manage personnel profiles, skills inventory, availability, and active workload.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-secondary" id="bulk-import-emp-btn">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                Bulk Import (CSV / Excel)
+              </button>
+              <button class="btn btn-primary" id="open-add-employee-modal">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                Add Employee
+              </button>
+            </div>
+          </div>
+
+          <div class="filter-toolbar">
+            <div class="search-input-box">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              <input type="text" id="employee-search-input" placeholder="Search by name, role, email, or skill...">
+            </div>
+            <select class="select-filter" id="employee-skill-filter">
+              <option value="all">All Skills</option>
+            </select>
+            <select class="select-filter" id="employee-avail-filter">
+              <option value="all">All Availability</option>
+              <option value="true">Available</option>
+              <option value="false">Unavailable</option>
+            </select>
+          </div>
+
+          <div class="employee-cards-grid" id="employees-grid-container">
+            <!-- Rendered dynamically -->
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 3: MANAGER TASKS                          -->
+        <!-- ============================================== -->
+        <section class="page-view" id="manager-tasks-view">
+          <div class="page-header">
+            <div class="page-header-text">
+              <h1>Task Management</h1>
+              <p>Create, filter, organize, and trigger heuristic automatic assignments for all tasks.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-secondary" id="bulk-import-tasks-btn">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                Bulk Import Tasks
+              </button>
+              <button class="btn btn-primary" id="open-add-task-modal">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                Add New Task
+              </button>
+              <button class="btn btn-success" id="tasks-run-assignment-btn" onclick="window.runAutomaticAssignment()">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Run Automatic Assignment
+              </button>
+              <button class="btn btn-secondary" id="open-assignment-results-btn" style="display: none;">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                View Latest Results
+              </button>
+            </div>
+          </div>
+
+          <div class="filter-toolbar">
+            <div class="search-input-box">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              <input type="text" id="task-search-input" placeholder="Search tasks by title, skill, description, or assigned person...">
+            </div>
+            <select class="select-filter" id="task-status-filter">
+              <option value="all">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="Overdue">Overdue</option>
+              <option value="Paused">Paused</option>
+              <option value="Unassigned">Unassigned</option>
+            </select>
+            <select class="select-filter" id="task-priority-filter">
+              <option value="all">All Priorities</option>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+            <select class="select-filter" id="task-skill-filter">
+              <option value="all">All Skills</option>
+            </select>
+          </div>
+
+          <div class="card-panel">
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Task ID</th>
+                    <th>Name</th>
+                    <th>Assigned Employee</th>
+                    <th>Priority</th>
+                    <th>Deadline &amp; Risk</th>
+                    <th>Estimated Duration</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tasks-table-body">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 4: WORKFORCE MONITORING                   -->
+        <!-- ============================================== -->
+        <section class="page-view" id="manager-workforce-view">
+          <div class="page-header">
+            <div class="page-header-text">
+              <h1>Workforce Capacity &amp; Utilization</h1>
+              <p>Distinguish employee availability from active workload; monitor capacity thresholds and bottlenecks.</p>
+            </div>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Available Staff</span><div class="stat-icon green">🟢</div></div>
+              <div class="stat-val" id="wf-stat-available">0</div>
+              <div class="stat-subtext">Ready for new task assignments</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Currently Busy</span><div class="stat-icon blue">⚡</div></div>
+              <div class="stat-val" id="wf-stat-busy">0</div>
+              <div class="stat-subtext">Handling active assignments</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">At Capacity Limit</span><div class="stat-icon amber">⚠️</div></div>
+              <div class="stat-val" id="wf-stat-at-capacity">0</div>
+              <div class="stat-subtext">Workload &ge; max capacity</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Unavailable Staff</span><div class="stat-icon red">⛔</div></div>
+              <div class="stat-val" id="wf-stat-unavailable">0</div>
+              <div class="stat-subtext">Marked unavailable or on leave</div>
+            </div>
+          </div>
+
+          <div class="card-panel">
+            <div class="card-panel-header">
+              <div>
+                <h3>Individual Capacity &amp; Utilization Roster</h3>
+                <p>Real-time active load versus assigned weekly capacity limit</p>
+              </div>
+            </div>
+            <div class="card-panel-body">
+              <div class="table-responsive">
+                <table class="custom-table">
+                  <thead>
+                    <tr>
+                      <th>Employee</th>
+                      <th>Role</th>
+                      <th>Skills</th>
+                      <th>Availability</th>
+                      <th>Workload / Max Capacity</th>
+                      <th>Utilization %</th>
+                      <th>Remaining</th>
+                      <th>Quick Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="workforce-roster-body">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 5: EMERGENCY & REASSIGNMENT               -->
+        <!-- ============================================== -->
+        <section class="page-view" id="manager-emergencies-view">
+          <div class="page-header">
+            <div class="page-header-text">
+              <h1>Emergency Center &amp; Task Reassignment</h1>
+              <p>Review employee-submitted emergency reports, acknowledge incidents, and intelligently reassign affected tasks.</p>
+            </div>
+          </div>
+
+          <div class="card-panel">
+            <div class="card-panel-header">
+              <div>
+                <h3>Personnel Emergency Reports</h3>
+                <p>Submissions requiring manager acknowledgment or reassignment intervention</p>
+              </div>
+            </div>
+            <div class="card-panel-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="custom-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Employee</th>
+                      <th>Emergency Type</th>
+                      <th>Affected Task</th>
+                      <th>Description</th>
+                      <th>Expected Duration</th>
+                      <th>Submitted</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="emergencies-table-body">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 6: REPORTS & ASSIGNMENT HISTORY           -->
+        <!-- ============================================== -->
+        <section class="page-view" id="manager-reports-view">
+          <div class="page-header">
+            <div class="page-header-text">
+              <h1>Assignment History &amp; Analytical Reports</h1>
+              <p>Permanent audit trail of every heuristic run, sequential workload before/after, and exportable logs.</p>
+            </div>
+            <div class="header-actions">
+              <button class="btn btn-secondary" id="export-history-csv-btn">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Export History to CSV
+              </button>
+            </div>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Total Assignments Run</span><div class="stat-icon indigo">📊</div></div>
+              <div class="stat-val" id="report-total-assignments">0</div>
+              <div class="stat-subtext">Algorithm operations logged</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Assignment Success Rate</span><div class="stat-icon green">🎯</div></div>
+              <div class="stat-val" id="report-success-rate">0%</div>
+              <div class="stat-subtext">Successfully assigned tasks</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Reassignment Events</span><div class="stat-icon amber">🔄</div></div>
+              <div class="stat-val" id="report-reassignment-count">0</div>
+              <div class="stat-subtext">Manual / emergency transfers</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Average Utilization</span><div class="stat-icon purple">📈</div></div>
+              <div class="stat-val" id="report-avg-utilization">0%</div>
+              <div class="stat-subtext">Across active workforce</div>
+            </div>
+          </div>
+
+          <div class="card-panel">
+            <div class="card-panel-header">
+              <div>
+                <h3>Assignment Audit Log</h3>
+                <p>Complete execution history of the Greedy Minimum Workload Heuristic</p>
+              </div>
+            </div>
+            <div class="card-panel-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="custom-table">
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Task Title</th>
+                      <th>Employee</th>
+                      <th>Workload Before &rarr; After</th>
+                      <th>Algorithm</th>
+                      <th>Outcome</th>
+                      <th>Reason / Detail</th>
+                    </tr>
+                  </thead>
+                  <tbody id="history-table-body">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 7: EMPLOYEE DASHBOARD                     -->
+        <!-- ============================================== -->
+        <section class="page-view" id="employee-dashboard-view">
+          <div class="hero-banner" style="background: linear-gradient(120deg, #0c4a6e 0%, #0369a1 40%, #0284c7 100%);">
+            <div class="hero-text">
+              <span class="kicker">MY PERSONAL WORKSPACE</span>
+              <h2>Welcome back, <span id="emp-dash-greeting-name">Employee</span></h2>
+              <p>View your assigned workload, start active tasks, mark completed assignments, and report emergencies if unable to continue work.</p>
+            </div>
+          </div>
+
+          <div class="stats-grid-6">
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">My Assigned Tasks</span><div class="stat-icon blue">📋</div></div>
+              <div class="stat-val" id="emp-stat-total-tasks">0</div>
+              <div class="stat-subtext">Total allocated to me</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Pending Tasks</span><div class="stat-icon amber">⏳</div></div>
+              <div class="stat-val" id="emp-stat-pending-tasks">0</div>
+              <div class="stat-subtext">Assigned, not started</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">In Progress Tasks</span><div class="stat-icon indigo">⚡</div></div>
+              <div class="stat-val" id="emp-stat-inprogress-tasks">0</div>
+              <div class="stat-subtext">Currently executing</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Completed Tasks</span><div class="stat-icon green">✅</div></div>
+              <div class="stat-val" id="emp-stat-completed-tasks">0</div>
+              <div class="stat-subtext">Finished deliverables</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">Current Workload</span><div class="stat-icon amber">⏱️</div></div>
+              <div class="stat-val" id="emp-stat-workload">0h</div>
+              <div class="stat-subtext" id="emp-stat-capacity-subtext">Cap: 40h (0% used)</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-top"><span class="stat-label">My Status</span><div class="stat-icon purple">👤</div></div>
+              <div class="stat-val" id="emp-stat-avail-text" style="font-size: 18px; line-height: 28px;">Available</div>
+              <div class="stat-subtext" id="emp-stat-role-text">Software Developer</div>
+            </div>
+          </div>
+
+          <!-- EMPLOYEE PAUSED TASKS NOTIFICATION & CONTAINER -->
+          <div class="card-panel" id="emp-paused-tasks-panel" style="margin-bottom: 24px; display: none; border-left: 4px solid #ea580c; background: #fffdfa;">
+            <div class="card-panel-header">
+              <div>
+                <h3 style="color: #c2410c; display: flex; align-items: center; gap: 8px;">
+                  <span>⏸️ Paused Tasks (Preempted by Higher-Priority Task)</span>
+                  <span class="badge paused" id="emp-paused-badge">Paused</span>
+                </h3>
+                <p>These tasks were paused when a higher-priority task was assigned. Their progress is securely saved and they will automatically resume once higher-priority tasks complete.</p>
+              </div>
+            </div>
+            <div class="card-panel-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="custom-table">
+                  <thead>
+                    <tr>
+                      <th>Task Title</th>
+                      <th>Priority</th>
+                      <th>Saved Progress</th>
+                      <th>Remaining Hours</th>
+                      <th>Preempted By</th>
+                      <th>Auto-Resume Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="emp-paused-tasks-tbody">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card-panel">
+              <div class="card-panel-header">
+                <div>
+                  <h3>Immediate Action Required</h3>
+                  <p>Tasks assigned to you awaiting completion</p>
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="window.navigateToPage('employee-tasks')">View All →</button>
+              </div>
+              <div class="card-panel-body" style="padding: 0;">
+                <div class="table-responsive">
+                  <table class="custom-table">
+                    <thead>
+                      <tr><th>Task</th><th>Priority</th><th>Duration</th><th>Deadline</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="emp-quick-tasks-body">
+                      <!-- Rendered dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-panel">
+              <div class="card-panel-header">
+                <div>
+                  <h3>My Emergency Submissions</h3>
+                  <p>Status of emergency reports sent to manager</p>
+                </div>
+                <button class="btn btn-sm btn-secondary" onclick="window.navigateToPage('employee-emergencies')">Report Emergency →</button>
+              </div>
+              <div class="card-panel-body" style="padding: 0;">
+                <div class="table-responsive">
+                  <table class="custom-table">
+                    <thead>
+                      <tr><th>Type</th><th>Status</th><th>Manager Response</th><th>Date</th></tr>
+                    </thead>
+                    <tbody id="emp-quick-emergencies-body">
+                      <!-- Rendered dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 8: EMPLOYEE MY TASKS                      -->
+        <!-- ============================================== -->
+        <section class="page-view" id="employee-tasks-view">
+          <div class="page-header">
+            <div class="page-header-text">
+              <h1>My Assigned Tasks</h1>
+              <p>You can start tasks, record completion notes, and inform management if you encounter roadblocks.</p>
+            </div>
+          </div>
+
+          <div class="card-panel">
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Task ID</th>
+                    <th>Task Title</th>
+                    <th>Required Skill</th>
+                    <th>Priority</th>
+                    <th>Duration</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="my-assigned-tasks-body">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 9: EMPLOYEE TASK HISTORY                  -->
+        <!-- ============================================== -->
+        <section class="page-view" id="employee-history-view">
+          <div class="page-header">
+            <div class="page-header-text">
+              <h1>My Task Completion History</h1>
+              <p>Historical record of deliverables completed by you with timestamps and completion notes.</p>
+            </div>
+          </div>
+
+          <div class="card-panel">
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Task Title</th>
+                    <th>Skill</th>
+                    <th>Duration</th>
+                    <th>Completed Date</th>
+                    <th>Completion Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="my-task-history-body">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW 10: EMPLOYEE EMERGENCIES                  -->
+        <!-- ============================================== -->
+        <section class="page-view" id="employee-emergencies-view">
+          <div class="page-header">
+            <div class="page-header-text">
+              <h1>Report an Emergency / Inability to Continue</h1>
+              <p>Immediately notify your manager if you are unable to proceed with an assigned task.</p>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card-panel">
+              <div class="card-panel-header">
+                <div>
+                  <h3>Submit Emergency Report</h3>
+                  <p>Send an instant notification to management</p>
+                </div>
+              </div>
+              <div class="card-panel-body">
+                <form id="employee-report-emergency-form">
+                  <div class="form-group">
+                    <label for="emp-emergency-type">Emergency Type *</label>
+                    <select id="emp-emergency-type" required>
+                      <option value="Personal emergency">Personal emergency</option>
+                      <option value="Medical emergency">Medical emergency</option>
+                      <option value="Technical issue">Technical issue</option>
+                      <option value="Unable to continue assigned task" selected>Unable to continue assigned task</option>
+                      <option value="Unexpected workload issue">Unexpected workload issue</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="emp-emergency-task">Related Task (optional)</label>
+                    <select id="emp-emergency-task">
+                      <option value="">-- No specific task --</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="emp-emergency-desc">Description of Situation *</label>
+                    <textarea id="emp-emergency-desc" rows="3" required placeholder="Please provide specific details regarding the situation..."></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="emp-emergency-duration">Expected Unavailability Duration (optional)</label>
+                    <input type="text" id="emp-emergency-duration" placeholder="e.g. 4 hours, 2 days">
+                  </div>
+                  <button type="submit" class="btn btn-danger" style="width: 100%;">
+                    🚨 Submit Emergency Report to Manager
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <div class="card-panel">
+              <div class="card-panel-header">
+                <div>
+                  <h3>My Emergency Report History</h3>
+                  <p>Track manager acknowledgments and responses</p>
+                </div>
+              </div>
+              <div class="card-panel-body" style="padding: 0;">
+                <div class="table-responsive">
+                  <table class="custom-table">
+                    <thead>
+                      <tr><th>Type</th><th>Related Task</th><th>Status</th><th>Response</th></tr>
+                    </thead>
+                    <tbody id="emp-emergencies-history-table">
+                      <!-- Rendered dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: ADD / EDIT EMPLOYEE                     -->
+  <!-- ============================================== -->
+  <div class="modal-overlay" id="employee-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="employee-modal-title">Add Employee</h3>
+        <button class="modal-close-btn" data-close="employee-modal">&times;</button>
+      </div>
+      <form id="employee-form">
+        <div class="modal-body">
+          <input type="hidden" id="modal-employee-id">
+          <div class="form-group">
+            <label for="modal-employee-name">Full Name *</label>
+            <input type="text" id="modal-employee-name" required placeholder="e.g. Asha Rao">
+          </div>
+          <div class="form-group">
+            <label for="modal-employee-email">Email Address</label>
+            <input type="email" id="modal-employee-email" placeholder="e.g. asha.rao@company.com">
+          </div>
+          <div class="form-group">
+            <label for="modal-employee-role">Role / Job Title *</label>
+            <input type="text" id="modal-employee-role" required placeholder="e.g. Senior Backend Developer">
+          </div>
+          <div class="form-group">
+            <label>Skills &amp; Proficiency Levels *</label>
+            <div class="skill-input-builder" style="display: flex; gap: 8px; margin-bottom: 8px;">
+              <input type="text" id="modal-skill-name-input" placeholder="Skill name (e.g. Java, Python)" style="flex: 2;">
+              <select id="modal-skill-prof-select" style="flex: 1.4;">
+                <option value="Advanced">Advanced (100)</option>
+                <option value="Intermediate" selected>Intermediate (75)</option>
+                <option value="Beginner">Beginner (50)</option>
+              </select>
+              <button type="button" class="btn btn-secondary" id="btn-add-skill-prof" style="white-space: nowrap;">+ Add</button>
+            </div>
+            <div id="modal-skill-chips-container" class="skill-chips-editable">
+              <!-- Dynamically populated skill tags with proficiency badges and remove icons -->
+            </div>
+            <input type="hidden" id="modal-employee-skills">
+            <div class="form-help">Proficiency weights: Advanced (100), Intermediate (75), Beginner (50). Used in Weighted Suitability Scoring.</div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="modal-employee-max-workload">Max Capacity (Hours)</label>
+              <input type="number" id="modal-employee-max-workload" min="1" max="100" value="40" required>
+            </div>
+            <div class="form-group">
+              <label for="modal-employee-avail">Availability Status</label>
+              <select id="modal-employee-avail">
+                <option value="true">Available</option>
+                <option value="false">Unavailable</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="employee-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="save-employee-btn">Save Employee</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: ADD / EDIT TASK                         -->
+  <!-- ============================================== -->
+  <div class="modal-overlay" id="task-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="task-modal-title">Create New Task</h3>
+        <button class="modal-close-btn" data-close="task-modal">&times;</button>
+      </div>
+      <form id="task-form">
+        <div class="modal-body">
+          <input type="hidden" id="modal-task-id">
+          <div class="form-group">
+            <label for="modal-task-title">Task Title *</label>
+            <input type="text" id="modal-task-title" required placeholder="e.g. Implement OAuth2 Authentication">
+          </div>
+          <div class="form-group">
+            <label for="modal-task-desc">Description</label>
+            <textarea id="modal-task-desc" rows="2" placeholder="Brief explanation of task requirements..."></textarea>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="modal-task-skill">Required Skill *</label>
+              <input type="text" id="modal-task-skill" required placeholder="e.g. Java">
+            </div>
+            <div class="form-group">
+              <label for="modal-task-duration">Duration (Hours) *</label>
+              <input type="number" id="modal-task-duration" min="1" max="80" value="3" required>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="modal-task-priority">Priority *</label>
+              <select id="modal-task-priority">
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="modal-task-deadline">Deadline *</label>
+              <input type="date" id="modal-task-deadline" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="task-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="save-task-btn">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: BULK IMPORT (EMPLOYEES & TASKS)         -->
+  <!-- ============================================== -->
+  <div class="modal-overlay" id="import-modal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 id="import-modal-title">Bulk Import</h3>
+        <button class="modal-close-btn" data-close="import-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <p style="font-size:13px; color:var(--text-muted);" id="import-modal-desc">Upload a CSV or Excel (.xlsx) file with multiple records.</p>
+          <a href="#" class="btn btn-sm btn-secondary" id="import-download-template-btn">📥 Download Template</a>
+        </div>
+
+        <div class="file-dropzone" id="file-dropzone">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+          <p>Drag and drop CSV or Excel file here</p>
+          <span>or click to browse from your computer</span>
+          <input type="file" id="import-file-input" accept=".csv, .xlsx, .xls" style="display: none;">
+        </div>
+
+        <div id="import-selected-file-name" style="margin-top: 12px; font-size: 12px; font-weight: 600; color: var(--primary); display: none;"></div>
+
+        <!-- Import Summary Box -->
+        <div id="import-results-box" style="margin-top: 20px; display: none;">
+          <div class="stats-row" style="margin-bottom: 12px;">
+            <div class="stat-card" style="padding: 10px 14px;"><span class="stat-label">Total</span><div class="stat-val" id="imp-total" style="font-size: 20px;">0</div></div>
+            <div class="stat-card" style="padding: 10px 14px;"><span class="stat-label">Success</span><div class="stat-val" id="imp-success" style="font-size: 20px; color: var(--success);">0</div></div>
+            <div class="stat-card" style="padding: 10px 14px;"><span class="stat-label">Duplicates</span><div class="stat-val" id="imp-duplicates" style="font-size: 20px; color: var(--warning);">0</div></div>
+            <div class="stat-card" style="padding: 10px 14px;"><span class="stat-label">Invalid</span><div class="stat-val" id="imp-invalid" style="font-size: 20px; color: var(--danger);">0</div></div>
+          </div>
+          <div id="import-error-list" style="max-height: 150px; overflow-y: auto; background: #fff5f5; border: 1px solid #fed7d7; border-radius: var(--radius-sm); padding: 10px; font-size: 11px; color: #9b2c2c; display: none;"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close="import-modal">Close</button>
+        <button type="button" class="btn btn-primary" id="submit-import-btn" disabled>Upload &amp; Process</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: COMPLETE TASK (WITH NOTES)              -->
+  <!-- ============================================== -->
+  <div class="modal-overlay" id="complete-task-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Mark Task as Completed</h3>
+        <button class="modal-close-btn" data-close="complete-task-modal">&times;</button>
+      </div>
+      <form id="complete-task-form">
+        <div class="modal-body">
+          <input type="hidden" id="complete-task-id">
+          <p style="font-size: 13px; color: var(--text-main); margin-bottom: 14px;" id="complete-task-title-display">Completing Task</p>
+          <div class="form-group">
+            <label for="complete-task-notes">Completion Notes (optional)</label>
+            <textarea id="complete-task-notes" rows="3" placeholder="Briefly summarize deliverable status, PR link, or testing outcome..."></textarea>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted);">
+            Submitting this will mark the task as <strong>Completed</strong>, remove its hours from your active workload, and immediately inform management.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="complete-task-modal">Cancel</button>
+          <button type="submit" class="btn btn-success">Confirm &amp; Complete Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: REASSIGN TASK (GREEDY HEURISTIC)         -->
+  <!-- ============================================== -->
+  <div class="modal-overlay" id="reassign-modal">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3>Task Reassignment Engine</h3>
+        <button class="modal-close-btn" data-close="reassign-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="reassign-task-summary" style="padding: 12px; background: #f8fafc; border-radius: var(--radius-sm); border: 1px solid var(--border); margin-bottom: 16px;">
+          <!-- Dynamically populated -->
+        </div>
+
+        <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 10px;">Eligible Replacement Candidates (Greedy Workload Order)</h4>
+        <div class="table-responsive" style="max-height: 240px; overflow-y: auto;">
+          <table class="custom-table">
+            <thead>
+              <tr><th>Candidate</th><th>Skills</th><th>Active Workload</th><th>Capacity</th><th>Select</th></tr>
+            </thead>
+            <tbody id="reassign-candidates-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="form-group" style="margin-top: 16px;">
+          <label for="reassign-reason-input">Reassignment Reason / Management Note</label>
+          <input type="text" id="reassign-reason-input" placeholder="e.g. Employee unable to continue; reallocated to lowest load candidate">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close="reassign-modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirm-reassign-btn" disabled>Confirm Reassignment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: RESOLVE EMERGENCY                       -->
+  <!-- ============================================== -->
+  <div class="modal-overlay" id="resolve-emergency-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Resolve Emergency Report</h3>
+        <button class="modal-close-btn" data-close="resolve-emergency-modal">&times;</button>
+      </div>
+      <form id="resolve-emergency-form">
+        <div class="modal-body">
+          <input type="hidden" id="resolve-emergency-id">
+          <p id="resolve-emergency-info" style="font-size: 13px; margin-bottom: 14px;"></p>
+          <div class="form-group">
+            <label for="resolve-emergency-response">Manager Response / Resolution Note</label>
+            <textarea id="resolve-emergency-response" rows="3" placeholder="Explain action taken (e.g. Task reassigned, medical leave approved)..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close="resolve-emergency-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Resolve Incident</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: ASSIGNMENT EXECUTION RESULTS            -->
+  <!-- ============================================== -->
+  <div class="modal-overlay" id="assignment-results-modal">
+    <div class="modal-box modal-xl" style="background: #f8fafc;">
+      <div class="modal-header" style="background: #ffffff;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <h3 style="margin: 0;">Automatic Task Assignment Summary</h3>
+        </div>
+        <button class="modal-close-btn" data-close="assignment-results-modal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        <!-- Clean White Summary Stats Bar -->
+        <div class="clean-stat-bar">
+          <div class="clean-stat-card neutral">
+            <span class="clean-stat-label">Pending Tasks Processed</span>
+            <div class="clean-stat-val" id="res-stat-total">0</div>
+          </div>
+          <div class="clean-stat-card success">
+            <span class="clean-stat-label">Successfully Assigned</span>
+            <div class="clean-stat-val" id="res-stat-assigned">0</div>
+          </div>
+          <div class="clean-stat-card warning">
+            <span class="clean-stat-label">Tasks Requiring Review</span>
+            <div class="clean-stat-val" id="res-stat-unassigned">0</div>
+          </div>
+        </div>
+
+        <!-- Task Evaluation List -->
+        <div id="assignment-results-list">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+      <div class="modal-footer" style="background: #ffffff;">
+        <button type="button" class="btn btn-secondary" data-close="assignment-results-modal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- APP SCRIPTS -->
+  <script src="js/app.js"></script>
+</body>
+</html>
